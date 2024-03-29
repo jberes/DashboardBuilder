@@ -7,6 +7,6 @@
         public string? VizId { get; set; }
         public string? VizTitle { get; set; }
         public string? VizChartType { get; set; }
-        public string? VizImageUrl { get; set; }
+
     }
 }

@@ -93,8 +93,7 @@ app.MapGet("dashboards/visualizations", () =>
                             DashboardTitle = document.Title,
                             VizId = viz.Id,
                             VizTitle = viz.Title,
-                            VizChartType = GetDisplayName(vizType.Name),
-                            VizImageUrl = GetImageUrl(vizType.Name),
+                            VizChartType = viz.ChartType.ToString(),                           
                         };
                         allVisualizationChartInfos.Add(chartInfo);
                     }

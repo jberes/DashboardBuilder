@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="Reveal.Sdk.AspNetCore" Version="1.6.4" />
-    <PackageReference Include="Reveal.Sdk.Dom" Version="0.1.148-beta" />
+    <PackageReference Include="Reveal.Sdk.Dom" Version="0.1.150-beta" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

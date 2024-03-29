@@ -1,0 +1,26 @@
+<div class="column-layout group">
+  <div class="column-layout group_1">
+    <igx-list class="list">
+      <igx-list-item *ngFor="let item of revealServerVisualizationChartInfo" (click)="listItemClick(item)"
+      [ngClass]="item.selected ? 'selected' : ''" #item igxRipple igxRippleTarget=".igx-list__item-content">     
+      <span igxListThumbnail>
+          <!-- // Update the image URL of your server via the environment variable  -->
+          <igx-avatar [src]="environment.IMAGE_URL + item.vizChartType + '.png'" class="avatar"></igx-avatar>
+        </span>
+        <span igxListLineTitle>{{ item.vizTitle }}</span>
+        <span igxListLineSubTitle>{{ item.dashboardTitle }}</span>
+        <span igxListAction>
+          <igx-icon (click)="iconClick(item, $event)" class="icon">
+            add_chart
+          </igx-icon>
+        </span>
+      </igx-list-item>
+    </igx-list>
+  </div>
+  <div class="column-layout group_2">
+    <div #revealSingleViz class="reveal-dash-board"></div>
+  </div>
+</div>
+<div class="column-layout group_3">
+  <div #revealDashboard class="reveal-dash-board_1"></div>
+</div>

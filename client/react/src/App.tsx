@@ -14,6 +14,16 @@ export interface VisualizationChartInfo {
   vizImageUrl: string;
 }
 
+const options: RevealViewOptions = {
+  canEdit: true,
+  canSaveAs: true,
+  startInEditMode: true,
+  dataSourceDialog:
+  {
+    showExistingDataSources: true,
+  },
+}
+
 export default function Builder() {
   const [dashboardFileName, setDashboardFileName] = useState<string | unknown>("");
   const [vizId, setVizId] = useState<string | number>("");
@@ -25,36 +35,33 @@ export default function Builder() {
   const dashboardDocumentRef = useRef(dashboardDocument);
   dashboardDocumentRef.current = dashboardDocument;
 
-  const options: RevealViewOptions = {
-    canEdit: true,
-    canSaveAs: true,
-    startInEditMode: true,
-    dataSourceDialog:
-    {
-      showExistingDataSources: true,
-    },
-    header: {
+  useEffect(() => {
+    options.header = {
       menu: {
         items: [
           { title: "Clear / New", click: () => resetDashboard(), icon: RevealSdkSettings.serverUrl + `/images/download.png` },
         ]
       }
-    }
-  }
+    };
 
-  const selectVisualization = (viz: VisualizationChartInfo) => {
-   setDashboardFileName(viz.dashboardFileName);
-   setVizId(viz.vizId);
-  };
-
-  useEffect(() => {
     fetchVisualizationData();
   }, []);
 
+  useEffect(() => {
+    if (selectedVisualizations.length > 0) {
+      generateDashboard();
+    }
+  }, [selectedVisualizations]);
+
   const fetchVisualizationData = async () => {
-    const response = await fetch(RevealSdkSettings.serverUrl + `/dashboards/visualizations/all`);
+    const response = await fetch(RevealSdkSettings.serverUrl + `/dashboards/visualizations`);
     const data = await response.json();
     setVisualizationData(data);
+  };
+
+  const selectVisualization = (viz: VisualizationChartInfo) => {
+    setDashboardFileName(viz.dashboardFileName);
+    setVizId(viz.vizId);
   };
 
   const addVisualization = async (
@@ -93,17 +100,17 @@ export default function Builder() {
   };
 
   const resetDashboard = () => {
-    setSelectedVisualizations([]); 
-    setDashboardDocument(null); 
+    setSelectedVisualizations([]);
+    setDashboardDocument(null);
   };
 
   const isDuplicateName = async (name: string) => {
     try {
-      const response = await fetch(RevealSdkSettings.serverUrl + `/isduplicatename/${name}`);
-      
+      const response = await fetch(RevealSdkSettings.serverUrl + `/dashboards/${name}/exists`);
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
-      }      
+      }
       const responseData = await response.json();
       return responseData;
     } catch (error) {
@@ -111,48 +118,43 @@ export default function Builder() {
       return false;
     }
   };
-  
+
 
   const saveDashboard = async (e: SaveEventArgs) => {
     const duplicate = await isDuplicateName(e.name);
+    
     if (duplicate && !window.confirm(`A dashboard with name: ${e.name} already exists. Do you want to override it?`)) {
-      return; 
+      return;
     }
 
     const isInvalidName = (name: string) => name === "Generated Dashboard" || name === "New Dashboard" || name === "";
-  
+
     if (e.saveAs || isInvalidName(e.name)) {
       let newName = null;
-  
+
       do {
         newName = window.prompt("Please enter a valid dashboard name");
         if (newName === null) {
-          return; 
+          return;
         }
       } while (isInvalidName(newName));
-  
+
       e.dashboardId = e.name = newName;
     }
-  
+
     e.saveFinished();
     resetDashboard();
     setTimeout(fetchVisualizationData, 2000);
   };
-  
-  useEffect(() => {
-    if (selectedVisualizations.length > 0) {
-      generateDashboard();
-    }
-  }, [selectedVisualizations]); 
 
   return (
     <>
       <main className="lg:pl-72 h-full">
-      <div className="xl:pl-64" style={{ height: "calc(100vh - 25px)" }}>
-        <RevealView
+        <div className="xl:pl-64 h-full" >
+          <RevealView
             options={options}
             dashboard={dashboardDocument}
-            onSave={saveDashboard} 
+            onSave={saveDashboard}
           />
         </div>
       </main>
@@ -186,7 +188,7 @@ export default function Builder() {
                 </div>
                 <div className="flex shrink-0 items-center gap-x-4 cursor-pointer p-1 rounded-full hover:bg-indigo-100">
                   <PlusIcon
-                    onClick={(event) => addVisualization(viz, event)}
+                    onClick={(event: any) => addVisualization(viz, event)}
                     className="h-5 w-5 flex-none text-gray-400"
                     aria-hidden="true"
                   />

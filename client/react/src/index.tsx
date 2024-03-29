@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { RevealSdkSettings } from '@revealbi/ui';
 
-RevealSdkSettings.serverUrl =  "https://localhost:51977"
+RevealSdkSettings.serverUrl =  "http://localhost:7218"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

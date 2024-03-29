@@ -33,7 +33,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Images"
 });
 
-app.MapGet("/isduplicatename/{name}", (string name) =>
+app.MapGet("/dashboards/{name}/exists", (string name) =>
 {
     var filePath = Path.Combine(Environment.CurrentDirectory, "Dashboards");
     return File.Exists($"{filePath}/{name}.rdash");
@@ -70,7 +70,7 @@ string GetDisplayName(string input)
     return friendlyNameBuilder.ToString().Trim();
 }
 
-app.MapGet("dashboards/visualizations/all", () =>
+app.MapGet("dashboards/visualizations", () =>
 {
     try
     {

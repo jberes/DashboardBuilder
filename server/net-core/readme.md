@@ -1,4 +1,3 @@
-Sure, let's break down the code:
 
 1. **Namespace Imports**
    ```csharp

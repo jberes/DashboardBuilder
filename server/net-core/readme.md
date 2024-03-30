@@ -1,12 +1,4 @@
-
-
-
-
-Certainly! Below is a step-by-step guide on how to install the **Reveal SDK** packages (`Reveal.Sdk.AspNetCore` and `Reveal.Sdk.Dom`) into a **.NET Core** project using **Visual Studio**:
-
----
-
-# Installing Reveal SDK Packages in a .NET Core Project
+# Building the .NET Core Server for the Reveal Dashboard Builder
 
 ## Prerequisites
 
@@ -40,6 +32,8 @@ Before proceeding, ensure that you have the following prerequisites:
    - Add the following namespace at the top:
      ```csharp
      using Reveal.Sdk;
+     using Reveal.Sdk.Dom;
+     
      ```
    - Inside the `Main` method, add the call to `IMvcBuilder.AddReveal()` to the existing `builder.Services.AddControllers()` method:
      ```csharp
@@ -85,6 +79,41 @@ To ensure that each dashboard file is correctly deployed, follow these steps:
 ---
 
 
+# Class Documentation: VisualizationChartInfo
+
+Namespace: RevalSdk.Server
+
+## Description
+The `VisualizationChartInfo` class is a part of the `RevalSdk.Server` namespace. IThis class is used to store and retrieve information about a visualization chart. The properties can be accessed and modified using standard get and set methods.
+
+## Properties
+
+- `DashboardFileName`: This property is of type `string`. It can be null. It holds the file name of the dashboard.
+
+- `DashboardTitle`: This property is of type `string`. It can be null. It holds the title of the dashboard.
+
+- `VizId`: This property is of type `string`. It can be null. It holds the unique identifier of the visualization.
+
+- `VizTitle`: This property is of type `string`. It can be null. It holds the title of the visualization.
+
+- `VizChartType`: This property is of type `string`. It can be null. It holds the type of the visualization chart.
+
+## Code for the Class
+
+```csharp
+namespace RevalSdk.Server
+{
+    public class VisualizationChartInfo
+    {
+        public string? DashboardFileName { get; set; }
+        public string? DashboardTitle { get; set; }
+        public string? VizId { get; set; }
+        public string? VizTitle { get; set; }
+        public string? VizChartType { get; set; }
+
+    }
+}
+```
 
 5. **Setup CORS Policy (Debugging)**:
    - While developing and debugging, you may host the server and client app on different URLs.
@@ -108,21 +137,7 @@ To ensure that each dashboard file is correctly deployed, follow these steps:
    - Build your project to ensure there are no errors.
    - Run your ASP.NET Core application.
 
-## Additional Notes
 
-- Customize the folder structure, dashboard conventions, and CORS policies according to your project requirements.
-
----
-
-Feel free to adapt this documentation to your specific project context. If you have further questions or need additional details, feel free to ask!
-
-Source: Conversation with Bing, 3/30/2024
-(1) Setting up the Reveal SDK Server with ASP.NET | Reveal. https://help.revealbi.io/web/getting-started-server/.
-(2) Configuring an ASP.NET Core Server | Reveal. https://help.revealbi.io/web/configuring-server-aspnet/.
-(3) Installing the Server SDK | Reveal. https://help.revealbi.io/web/install-server-sdk/.
-(4) Getting Started with Reveal SDK for ASP.NET | Reveal. https://help.revealbi.io/web/getting-started-aspnet/.
-(5) undefined. https://localhost:24519.
-(6) undefined. https://localhost:4200.
 
 1. **Namespace Imports**
    ```csharp
@@ -130,7 +145,6 @@ Source: Conversation with Bing, 3/30/2024
    using Reveal.Sdk.Dom;
    using System.Text;
    using RevalSdk.Server;
-   using Microsoft.Extensions.FileProviders;
    ```
    These lines import the necessary namespaces for the application. They include the Reveal SDK for creating dashboards, `System.Text` for text manipulation, and `Microsoft.Extensions.FileProviders` for file operations.
 
@@ -190,10 +204,22 @@ Source: Conversation with Bing, 3/30/2024
 # Middleware Documentation: UseStaticFiles
 
 ## Description
-The `UseStaticFiles` middleware is a part of ASP.NET Core's built-in middleware for handling static files. It enables the application to serve static files from a specified directory.
+The `UseStaticFiles` middleware is a part of ASP.NET Core's built-in middleware for handling static files. It enables the application to serve static files from a specified directory.  Serving static files is a fundamental task for a web server. Static files, such as HTML, CSS, images, and JavaScript, are assets an ASP.NET Core app serves directly to clients. Some configuration is required to enable serving of these files. The `UseStaticFiles` middleware provides an easy and efficient way to serve static files in an ASP.NET Core application.
+
+- `FileProvider`: This parameter is of type `IFileProvider`. It is used to specify the file provider for locating the static files. In this case, a `PhysicalFileProvider` is being used to serve files from the physical path combined with the content root path of the application and the "Images" directory.
+
+- `RequestPath`: This parameter is of type `PathString`. It is used to specify the request path for accessing the static files. In this case, the static files can be accessed with the "/Images" path in the URL.
 
 ## Usage
 In the provided code snippet, `UseStaticFiles` is being used with `StaticFileOptions` to specify options for serving static files.
+
+Make sure to add the using statement to enable static file operations:
+
+```csharp
+using Microsoft.Extensions.FileProviders;
+```
+
+Then add the path to the Image folder you added earlier so they can correctly be served by this .NET Core application.
 
 ```csharp
 app.UseStaticFiles(new StaticFileOptions
@@ -204,56 +230,18 @@ app.UseStaticFiles(new StaticFileOptions
 });
 ```
 
-## Parameters
 
-- `FileProvider`: This parameter is of type `IFileProvider`. It is used to specify the file provider for locating the static files. In this case, a `PhysicalFileProvider` is being used to serve files from the physical path combined with the content root path of the application and the "Images" directory.
-
-- `RequestPath`: This parameter is of type `PathString`. It is used to specify the request path for accessing the static files. In this case, the static files can be accessed with the "/Images" path in the URL.
-
-## Why it is needed
-Serving static files is a fundamental task for a web server. Static files, such as HTML, CSS, images, and JavaScript, are assets an ASP.NET Core app serves directly to clients. Some configuration is required to enable serving of these files. The `UseStaticFiles` middleware provides an easy and efficient way to serve static files in an ASP.NET Core application.
-```
-
-   ```csharp
-   app.UseStaticFiles(new StaticFileOptions
-   {
-       FileProvider = new PhysicalFileProvider(
-           Path.Combine(builder.Environment.ContentRootPath, "Images")),
-       RequestPath = "/Images"
-   });
-   ```
-   This block configures the application to serve static files from the "Images" directory.
-
-9. **Dashboard Existence Endpoint**
-Certainly! Below is the technical documentation in Markdown format that describes the provided code snippet:
-
----
-
-# Check if Dashboard File Exists
-
-## Overview
-
+# Check if Dashboard Exists
 The given code snippet is a route handler in a **.NET Core** application that checks whether a dashboard file exists. It exposes an HTTP endpoint that accepts a dashboard name as a parameter and verifies if the corresponding dashboard file exists on the server.
-
-## Code Explanation
-
-### Route Definition
-
-```csharp
-app.MapGet("/dashboards/{name}/exists", (string name) =>
-{
-    // Implementation details...
-});
-```
 
 - The route is defined using `app.MapGet()`, which associates an HTTP GET request with a specific path.
 - The `{name}` placeholder in the route corresponds to the dashboard name provided in the URL.
 
-### File Existence Check
-
 ```csharp
-var filePath = Path.Combine(Environment.CurrentDirectory, "Dashboards");
-return File.Exists($"{filePath}/{name}.rdash");
+app.MapGet("/dashboards/{name}/exists", (string name) =>
+{
+   var filePath = Path.Combine(Environment.CurrentDirectory, "Dashboards");
+   return File.Exists($"{filePath}/{name}.rdash");});
 ```
 
 1. **File Path Calculation**:
@@ -264,33 +252,10 @@ return File.Exists($"{filePath}/{name}.rdash");
    - The `File.Exists()` method is used to verify if a file with the specified name (`{name}.rdash`) exists in the calculated file path.
    - If the file exists, the method returns `true`; otherwise, it returns `false`.
 
-## Purpose and Use Case
-
-The purpose of this code snippet is to provide a simple API endpoint for clients to check whether a specific dashboard file exists. This functionality can be useful in scenarios such as:
-
-- **Dynamic Dashboard Loading**: When your application dynamically loads dashboards based on user requests, you can use this route to determine if a requested dashboard exists before attempting to load it.
-- **Error Handling**: If a dashboard file is missing, you can return an appropriate error response (e.g., 404 Not Found) to the client.
-
-## Notes
-
-- Ensure that the "Dashboards" directory exists and contains the relevant dashboard files.
-- Adjust the implementation as needed to handle additional logic (e.g., authentication, authorization, error handling).
-
----
-
-Feel free to customize this documentation according to your specific project requirements. If you have any further questions or need additional details, feel free to ask!
-
-Certainly! Let's dive into the technical documentation for the provided code snippet:
-
----
 
 # Retrieve Visualization Information from Dashboard Files
 
-## Overview
-
 The given code snippet is part of a **.NET Core** application and serves as a route handler. Its purpose is to collect information about visualizations from dashboard files stored in a specific directory. The endpoint `/dashboards/visualizations` responds with a list of `VisualizationChartInfo` objects.
-
-## Code Explanation
 
 ### Route Definition
 
@@ -324,39 +289,7 @@ app.MapGet("dashboards/visualizations", () =>
        - `VizChartType`: The type of chart associated with the visualization.
      - This information is stored in a `VisualizationChartInfo` object and added to the `allVisualizationChartInfos` list.
 
-4. **Error Handling**:
-   - Exceptions are caught at different levels:
-     - If loading a dashboard document fails, an error message is printed.
-     - If processing a visualization within a document fails, another error message is logged.
-     - If any other unexpected exception occurs, a generic error message is returned.
 
-### Response Types
-
-- The endpoint produces two types of responses:
-  1. A successful response (HTTP status 200 OK) containing a list of `VisualizationChartInfo` objects.
-  2. An error response (HTTP status 500 Internal Server Error) with an appropriate message.
-
-## Purpose and Use Case
-
-This code snippet is useful for scenarios where you need to:
-- Dynamically collect visualization metadata from dashboard files.
-- Provide an API endpoint for clients to retrieve visualization information.
-
-## Notes
-
-- Ensure that the "Dashboards" directory exists and contains valid dashboard files.
-- Customize the error handling logic as needed for your application.
-
----
-
-Feel free to adapt this documentation to your specific project context. If you have further questions or need additional details, feel free to ask!
-
-Source: Conversation with Bing, 3/30/2024
-(1) Create responses in Minimal API applications | Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-8.0.
-(2) ASP.NET MapGet Example - Dot Net Perls. https://www.dotnetperls.com/mapget-aspnet-core.
-(3) AspNetCore.Docs/aspnetcore/fundamentals/routing.md at main - GitHub. https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/fundamentals/routing.md.
-(4) asp.net core - How can I, using a WebApplication MapGet handler, send .... https://stackoverflow.com/questions/72104777/how-can-i-using-a-webapplication-mapget-handler-send-an-image-as-an-http-respo.
-(5) Parameter binding in Minimal API applications | Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/parameter-binding?view=aspnetcore-8.0.
    ```csharp
    app.MapGet("dashboards/visualizations", () =>
    {
@@ -425,43 +358,3 @@ Source: Conversation with Bing, 3/30/2024
 This breakdown should help you understand the structure and functionality of the code. You can use this markdown in your documentation. Let me know if you need further clarification on any part of the code.
 
 
-
-# Class Documentation: VisualizationChartInfo
-
-Namespace: RevalSdk.Server
-
-## Description
-The `VisualizationChartInfo` class is a part of the `RevalSdk.Server` namespace. It is designed to hold information about a visualization chart.
-
-## Properties
-
-- `DashboardFileName`: This property is of type `string`. It can be null. It holds the file name of the dashboard.
-
-- `DashboardTitle`: This property is of type `string`. It can be null. It holds the title of the dashboard.
-
-- `VizId`: This property is of type `string`. It can be null. It holds the unique identifier of the visualization.
-
-- `VizTitle`: This property is of type `string`. It can be null. It holds the title of the visualization.
-
-- `VizChartType`: This property is of type `string`. It can be null. It holds the type of the visualization chart.
-
-## Code for the Class
-
-```csharp
-namespace RevalSdk.Server
-{
-    public class VisualizationChartInfo
-    {
-        public string? DashboardFileName { get; set; }
-        public string? DashboardTitle { get; set; }
-        public string? VizId { get; set; }
-        public string? VizTitle { get; set; }
-        public string? VizChartType { get; set; }
-
-    }
-}
-```
-
-
-## Usage
-This class is used to store and retrieve information about a visualization chart. The properties can be accessed and modified using standard get and set methods.

@@ -54,7 +54,6 @@ app.MapGet("dashboards/visualizations", () =>
                 {
                     try
                     {
-                    //    var vizType = viz.GetType();
                         var chartInfo = new VisualizationChartInfo
                         {
                             DashboardFileName = Path.GetFileNameWithoutExtension(filePath),

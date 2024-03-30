@@ -11,7 +11,6 @@ export interface VisualizationChartInfo {
   vizId: string;
   vizTitle: string;
   vizChartType: string;
-  vizImageUrl: string;
 }
 
 const options: RevealViewOptions = {
@@ -174,7 +173,7 @@ export default function Builder() {
                 <div className="flex min-w-0 gap-x-4">
                   <img
                     className="h-12 w-12 flex-none rounded-full bg-gray-50"
-                    src={RevealSdkSettings.serverUrl + `\\images\\` + viz.vizImageUrl}
+                    src={RevealSdkSettings.serverUrl + `\\images\\` + viz.vizChartType + `.png`}
                     alt=""
                   />
                   <div className="min-w-0 flex-auto">
@@ -201,7 +200,7 @@ export default function Builder() {
           <VisualizationViewer
             dashboard={dashboardFileName}
             visualization={vizId}
-            style={{ height: "420px" }}
+            style={{ height: "400px" }}
           ></VisualizationViewer>
         </div>
       </aside>

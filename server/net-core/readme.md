@@ -60,6 +60,35 @@
    These lines configure the application's middleware. It enables the "AllowAll" CORS policy, HTTPS redirection, authorization, and controller mapping.
 
 8. **Static Files Configuration**
+
+
+# Middleware Documentation: UseStaticFiles
+
+## Description
+The `UseStaticFiles` middleware is a part of ASP.NET Core's built-in middleware for handling static files. It enables the application to serve static files from a specified directory.
+
+## Usage
+In the provided code snippet, `UseStaticFiles` is being used with `StaticFileOptions` to specify options for serving static files.
+
+```csharp
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Images")),
+    RequestPath = "/Images"
+});
+```
+
+## Parameters
+
+- `FileProvider`: This parameter is of type `IFileProvider`. It is used to specify the file provider for locating the static files. In this case, a `PhysicalFileProvider` is being used to serve files from the physical path combined with the content root path of the application and the "Images" directory.
+
+- `RequestPath`: This parameter is of type `PathString`. It is used to specify the request path for accessing the static files. In this case, the static files can be accessed with the "/Images" path in the URL.
+
+## Why it is needed
+Serving static files is a fundamental task for a web server. Static files, such as HTML, CSS, images, and JavaScript, are assets an ASP.NET Core app serves directly to clients. Some configuration is required to enable serving of these files. The `UseStaticFiles` middleware provides an easy and efficient way to serve static files in an ASP.NET Core application.
+```
+
    ```csharp
    app.UseStaticFiles(new StaticFileOptions
    {
@@ -80,7 +109,7 @@
    ```
    This block maps a GET request to check if a dashboard file exists.
 
-10. **Dashboard Visualizations Endpoint**
+11. **Dashboard Visualizations Endpoint**
    ```csharp
    app.MapGet("dashboards/visualizations", () =>
    {
@@ -147,3 +176,45 @@
    This line runs the application.
 
 This breakdown should help you understand the structure and functionality of the code. You can use this markdown in your documentation. Let me know if you need further clarification on any part of the code.
+
+
+
+# Class Documentation: VisualizationChartInfo
+
+Namespace: RevalSdk.Server
+
+## Description
+The `VisualizationChartInfo` class is a part of the `RevalSdk.Server` namespace. It is designed to hold information about a visualization chart.
+
+## Properties
+
+- `DashboardFileName`: This property is of type `string`. It can be null. It holds the file name of the dashboard.
+
+- `DashboardTitle`: This property is of type `string`. It can be null. It holds the title of the dashboard.
+
+- `VizId`: This property is of type `string`. It can be null. It holds the unique identifier of the visualization.
+
+- `VizTitle`: This property is of type `string`. It can be null. It holds the title of the visualization.
+
+- `VizChartType`: This property is of type `string`. It can be null. It holds the type of the visualization chart.
+
+## Code for the Class
+
+```csharp
+namespace RevalSdk.Server
+{
+    public class VisualizationChartInfo
+    {
+        public string? DashboardFileName { get; set; }
+        public string? DashboardTitle { get; set; }
+        public string? VizId { get; set; }
+        public string? VizTitle { get; set; }
+        public string? VizChartType { get; set; }
+
+    }
+}
+```
+
+
+## Usage
+This class is used to store and retrieve information about a visualization chart. The properties can be accessed and modified using standard get and set methods.

@@ -39,7 +39,6 @@ app.get("/dashboards/visualizations", async (req, resp) => {
 					vizId: viz.id,
 					vizTitle: viz.title,
 					vizChartType: viz.chartType,
-					vizImageUrl: getImageUrl(viz.chartType),
 				};
 				allVisualizationChartInfos.push(chartInfo);
 			});
@@ -50,9 +49,6 @@ app.get("/dashboards/visualizations", async (req, resp) => {
 	}
 });
 
-function getImageUrl(input) {
-	return `${input.toLocaleLowerCase()}.png`;
-}
 
 const options = {
 }

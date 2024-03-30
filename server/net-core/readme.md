@@ -40,10 +40,6 @@ Before proceeding, ensure that you have the following prerequisites:
      builder.Services.AddControllers().AddReveal();
      ```
 
-Certainly! Let's enhance the documentation for creating the **Dashboards** folder, downloading the sample dashboards, and ensuring the **Copy if Newer** property is set correctly:
-
----
-
 # Setting Up Dashboards for Reveal SDK in ASP.NET Core
 
 ## Step 1: Create the Dashboards Folder
@@ -76,44 +72,8 @@ To ensure that each dashboard file is correctly deployed, follow these steps:
 - Make sure your dashboard files (with the `.rdash` extension) are directly under the **Dashboards** folder.
 - Verify that the **Copy if Newer** property is correctly set for each dashboard file.
 
----
 
 
-# Class Documentation: VisualizationChartInfo
-
-Namespace: RevalSdk.Server
-
-## Description
-The `VisualizationChartInfo` class is a part of the `RevalSdk.Server` namespace. IThis class is used to store and retrieve information about a visualization chart. The properties can be accessed and modified using standard get and set methods.
-
-## Properties
-
-- `DashboardFileName`: This property is of type `string`. It can be null. It holds the file name of the dashboard.
-
-- `DashboardTitle`: This property is of type `string`. It can be null. It holds the title of the dashboard.
-
-- `VizId`: This property is of type `string`. It can be null. It holds the unique identifier of the visualization.
-
-- `VizTitle`: This property is of type `string`. It can be null. It holds the title of the visualization.
-
-- `VizChartType`: This property is of type `string`. It can be null. It holds the type of the visualization chart.
-
-## Code for the Class
-
-```csharp
-namespace RevalSdk.Server
-{
-    public class VisualizationChartInfo
-    {
-        public string? DashboardFileName { get; set; }
-        public string? DashboardTitle { get; set; }
-        public string? VizId { get; set; }
-        public string? VizTitle { get; set; }
-        public string? VizChartType { get; set; }
-
-    }
-}
-```
 
 5. **Setup CORS Policy (Debugging)**:
    - While developing and debugging, you may host the server and client app on different URLs.
@@ -133,61 +93,7 @@ namespace RevalSdk.Server
        ```
      - Ensure that the `UseCors` middleware is called after `UseHttpsRedirection()` and before `UseAuthorization()`.
 
-6. **Build and Run**:
-   - Build your project to ensure there are no errors.
-   - Run your ASP.NET Core application.
 
-
-
-1. **Namespace Imports**
-   ```csharp
-   using Reveal.Sdk;
-   using Reveal.Sdk.Dom;
-   using System.Text;
-   using RevalSdk.Server;
-   ```
-   These lines import the necessary namespaces for the application. They include the Reveal SDK for creating dashboards, `System.Text` for text manipulation, and `Microsoft.Extensions.FileProviders` for file operations.
-
-2. **Web Application Builder**
-   ```csharp
-   var builder = WebApplication.CreateBuilder(args);
-   ```
-   This line creates a new web application builder with the provided command-line arguments.
-
-3. **Service Configuration**
-   ```csharp
-   builder.Services.AddControllers().AddReveal(builder => { });
-   builder.Services.AddEndpointsApiExplorer();
-   builder.Services.AddSwaggerGen();
-   ```
-   These lines add controllers, Reveal services, API explorer endpoints, and Swagger generator to the application's services.
-
-4. **CORS Policy Configuration**
-   ```csharp
-   builder.Services.AddCors(options =>
-   {
-       options.AddPolicy("AllowAll",
-         builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
-       );
-   });
-   ```
-   This block adds a CORS policy named "AllowAll" that allows requests from any origin with any header and method.
-
-5. **Application Building**
-   ```csharp
-   var app = builder.Build();
-   ```
-   This line builds the application using the configured services and settings.
-
-6. **Development Environment Configuration**
-   ```csharp
-   if (app.Environment.IsDevelopment())
-   {
-       app.UseSwagger();
-       app.UseSwaggerUI();
-   }
-   ```
-   If the application is running in a development environment, it enables the use of Swagger and Swagger UI for API documentation.
 
 7. **Middleware Configuration**
    ```csharp
@@ -251,6 +157,42 @@ app.MapGet("/dashboards/{name}/exists", (string name) =>
 2. **File Existence Check**:
    - The `File.Exists()` method is used to verify if a file with the specified name (`{name}.rdash`) exists in the calculated file path.
    - If the file exists, the method returns `true`; otherwise, it returns `false`.
+
+# Add the VisualizationChartInfo Class
+
+Namespace: RevalSdk.Server
+
+## Description
+The `VisualizationChartInfo` class is a part of the `RevalSdk.Server` namespace. IThis class is used to store and retrieve information about a visualization chart. The properties can be accessed and modified using standard get and set methods.
+
+## Properties
+
+- `DashboardFileName`: This property is of type `string`. It can be null. It holds the file name of the dashboard.
+
+- `DashboardTitle`: This property is of type `string`. It can be null. It holds the title of the dashboard.
+
+- `VizId`: This property is of type `string`. It can be null. It holds the unique identifier of the visualization.
+
+- `VizTitle`: This property is of type `string`. It can be null. It holds the title of the visualization.
+
+- `VizChartType`: This property is of type `string`. It can be null. It holds the type of the visualization chart.
+
+## Code for the Class
+
+```csharp
+namespace RevalSdk.Server
+{
+    public class VisualizationChartInfo
+    {
+        public string? DashboardFileName { get; set; }
+        public string? DashboardTitle { get; set; }
+        public string? VizId { get; set; }
+        public string? VizTitle { get; set; }
+        public string? VizChartType { get; set; }
+
+    }
+}
+```
 
 
 # Retrieve Visualization Information from Dashboard Files

@@ -80,55 +80,70 @@
    ```
    This block maps a GET request to check if a dashboard file exists.
 
-10. **Image URL and Display Name Functions**
-    ```csharp
-    string GetImageUrl(string input)
-    {
-        const string visualizationSuffix = "Visualization";
-        if (input.EndsWith(visualizationSuffix, StringComparison.OrdinalIgnoreCase))
-        {
-            input = input[..^visualizationSuffix.Length].TrimEnd();
-        }
-        return $"{input}.png";
-    }
+10. **Dashboard Visualizations Endpoint**
+   ```csharp
+   app.MapGet("dashboards/visualizations", () =>
+   {
+       try
+       {
+           var allVisualizationChartInfos = new List<VisualizationChartInfo>();
+           var dashboardFiles = Directory.GetFiles("Dashboards", "*.rdash");
 
-    string GetDisplayName(string input)
-    {
-        const string visualizationSuffix = "Visualization";
-        if (input.EndsWith(visualizationSuffix, StringComparison.OrdinalIgnoreCase))
-        {
-            input = input[..^visualizationSuffix.Length].TrimEnd();
-        }
+           foreach (var filePath in dashboardFiles)
+           {
+               try
+               {
+                   var document = RdashDocument.Load(filePath);
+                   foreach (var viz in document.Visualizations)
+                   {
+                       try
+                       {
+                           var vizType = viz.GetType();
+                           var chartInfo = new VisualizationChartInfo
+                           {
+                               DashboardFileName = Path.GetFileNameWithoutExtension(filePath),
+                               DashboardTitle = document.Title,
+                               VizId = viz.Id,
+                               VizTitle = viz.Title,
+                               VizChartType = viz.ChartType.ToString(),                           
+                           };
+                           allVisualizationChartInfos.Add(chartInfo);
+                       }
+                       catch (Exception vizEx)
+                       {
+                           Console.WriteLine($"Error processing visualization {viz.Id} in file {filePath}: {vizEx.Message}");
+                       }
+                   }
+               }
+               catch (Exception fileEx)
+               {
+                   Console.WriteLine($"Error processing file {filePath}: {fileEx.Message}");
+               }
+           }
+           return Results.Ok(allVisualizationChartInfos);
+       }
+       catch (Exception ex)
+       {
+           return Results.Problem($"An error occurred: {ex.Message}");
+       }
 
-        StringBuilder friendlyNameBuilder = new(input.Length);
-        foreach (char currentChar in input)
-        {
-            if (friendlyNameBuilder.Length > 0 && char.IsUpper(currentChar))
-            {
-                friendlyNameBuilder.Append(' ');
-            }
+   }).Produces<IEnumerable<VisualizationChartInfo>>(StatusCodes.Status200OK)
+     .Produces(StatusCodes.Status500InternalServerError);
+   ```
+   This block maps a GET request to retrieve all dashboard visualizations. It also specifies the response types.
 
-            friendlyNameBuilder.Append(currentChar);
-        }
-        return friendlyNameBuilder.ToString().Trim();
-    }
-    ```
-    These functions generate an image URL and a display name from a given input string.
-
-11. **Dashboard Visualizations Endpoint**
-    ```csharp
-    app.MapGet("dashboards/visualizations", () =>
-    {
-        // Code omitted for brevity
-    }).Produces<IEnumerable<VisualizationChartInfo>>(StatusCodes.Status200OK)
-      .Produces(StatusCodes.Status500InternalServerError);
-    ```
-    This block maps a GET request to retrieve all dashboard visualizations. It also specifies the response types.
+11. **Middleware Configuration**
+   ```csharp
+   app.UseHttpsRedirection();
+   app.UseAuthorization();
+   app.MapControllers();
+   ```
+   These lines configure the application's middleware. It enables HTTPS redirection, authorization, and controller mapping.
 
 12. **Application Run**
-    ```csharp
-    app.Run();
-    ```
-    This line runs the application.
+   ```csharp
+   app.Run();
+   ```
+   This line runs the application.
 
 This breakdown should help you understand the structure and functionality of the code. You can use this markdown in your documentation. Let me know if you need further clarification on any part of the code.

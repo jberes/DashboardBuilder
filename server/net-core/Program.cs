@@ -1,6 +1,5 @@
 using Reveal.Sdk;
 using Reveal.Sdk.Dom;
-using System.Text;
 using RevalSdk.Server;
 using Microsoft.Extensions.FileProviders;
 

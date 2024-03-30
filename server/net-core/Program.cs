@@ -39,37 +39,6 @@ app.MapGet("/dashboards/{name}/exists", (string name) =>
     return File.Exists($"{filePath}/{name}.rdash");
 });
 
-string GetImageUrl(string input)
-{
-    const string visualizationSuffix = "Visualization";
-    if (input.EndsWith(visualizationSuffix, StringComparison.OrdinalIgnoreCase))
-    {
-        input = input[..^visualizationSuffix.Length].TrimEnd();
-    }
-    return $"{input}.png";
-}
-
-string GetDisplayName(string input)
-{
-    const string visualizationSuffix = "Visualization";
-    if (input.EndsWith(visualizationSuffix, StringComparison.OrdinalIgnoreCase))
-    {
-        input = input[..^visualizationSuffix.Length].TrimEnd();
-    }
-
-    StringBuilder friendlyNameBuilder = new(input.Length);
-    foreach (char currentChar in input)
-    {
-        if (friendlyNameBuilder.Length > 0 && char.IsUpper(currentChar))
-        {
-            friendlyNameBuilder.Append(' ');
-        }
-
-        friendlyNameBuilder.Append(currentChar);
-    }
-    return friendlyNameBuilder.ToString().Trim();
-}
-
 app.MapGet("dashboards/visualizations", () =>
 {
     try
@@ -86,7 +55,7 @@ app.MapGet("dashboards/visualizations", () =>
                 {
                     try
                     {
-                        var vizType = viz.GetType();
+                    //    var vizType = viz.GetType();
                         var chartInfo = new VisualizationChartInfo
                         {
                             DashboardFileName = Path.GetFileNameWithoutExtension(filePath),

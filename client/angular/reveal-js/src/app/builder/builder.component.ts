@@ -4,7 +4,6 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { IGX_LIST_DIRECTIVES, IgxAvatarComponent, IgxIconComponent } from 'igniteui-angular';
 import { Subject, takeUntil } from 'rxjs';
 import { VisualizationChartInfo } from '../models/reveal-server/visualization-chart-info';
-import { StateService } from '../services/state.service';
 import { RevealServerService } from '../services/reveal-server.service';
 import { environment } from '../../environments/environment';
 import { RdashDocument } from '@revealbi/dom';
@@ -49,7 +48,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   constructor(
     private revealServerService: RevealServerService,
-    protected stateService: StateService,
   ) {}
 
   ngOnInit() {

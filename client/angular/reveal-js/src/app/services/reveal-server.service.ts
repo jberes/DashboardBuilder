@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { VisualizationChartInfo } from '../models/reveal-server/visualization-chart-info';
+import { environment } from '../../environments/environment';
 
-const API_ENDPOINT = 'https://localhost:7218';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,7 @@ export class RevealServerService {
   ) { }
 
   public getVisualizationChartInfoList(): Observable<VisualizationChartInfo[]> {
+    const API_ENDPOINT = environment.BASE_URL;
     return this.http.get<VisualizationChartInfo[]>(`${API_ENDPOINT}/dashboards/visualizations`);
   }
 }

@@ -1,6 +1,4 @@
-This video and tutorial will walk you through how to create dashboard thumbnails from your Reveal dashboards.
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/X8Vngu33b9I/0.jpg)](https://www.youtube.com/watch?v=X8Vngu33b9I)
 
 # Building the .NET Core Server for the Reveal Dashboard Builder
 

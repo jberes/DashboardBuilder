@@ -11,7 +11,7 @@ public class AuthenticationProvider implements IRVAuthenticationProvider {
     @Override
     public IRVDataSourceCredential resolveCredentials(IRVUserContext userContext, RVDashboardDataSource dataSource) {
         if (dataSource instanceof RVSqlServerDataSource) {
-            return new RVUsernamePasswordDataSourceCredential("dev", "mugger(lunges0");
+            return new RVUsernamePasswordDataSourceCredential("dev", "dev");
         }
         return null;
     }

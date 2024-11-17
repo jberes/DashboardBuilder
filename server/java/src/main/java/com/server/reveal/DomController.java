@@ -1,5 +1,4 @@
 package com.server.reveal;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import jakarta.ws.rs.GET;
@@ -83,7 +81,7 @@ public class DomController {
         JSONObject jsonObject = new JSONObject(jsonContent);
         return jsonObject.optString("Title", "Untitled"); 
     }
-
+    
     public List<VisualizationChartInfo> parseWidgetsFromJson(String jsonContent, String dashboardFileName, String dashboardTitle) {
         List<VisualizationChartInfo> widgetInfoList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(jsonContent);
@@ -97,50 +95,78 @@ public class DomController {
     
         for (int i = 0; i < widgets.length(); i++) {
             JSONObject widget = widgets.getJSONObject(i);
-
+    
             String vizId = widget.optString("Id", "Unknown Id");
-            String vizTitle = widget.optString("Title", "Untitled");    
+            String vizTitle = widget.optString("Title", "Untitled");
             JSONObject visualizationSettings = widget.optJSONObject("VisualizationSettings");
             String vizChartType = "Unknown Chart Type"; // Default value
     
             if (visualizationSettings != null) {
                 String type = visualizationSettings.optString("_type");
+                String viewType = visualizationSettings.optString("ViewType");
+                String chartType = visualizationSettings.optString("ChartType");
     
-                switch (type) {
-                    case "IndicatorVisualizationSettingsType":
-                        vizChartType = "KpiTime";
-                        break;
-                    case "SingleRowVisualizationSettingsType":
-                        vizChartType = "TextView";
-                        break;
-                    case "IndicatorTargetVisualizationSettingsType":
-                        vizChartType = "KpiTarget";
-                        break;
-                    case "DiyVisualizationSettingsType":
-                        vizChartType = "Custom";
-                        break;
-                    case "AssetVisualizationSettingsType":
-                        vizChartType = "Image";
-                        break;
-                    case "GridVisualizationSettingsType":
-                        vizChartType = "Grid";
-                        break;
-                    case "GaugeVisualizationSettingsType":
-                        vizChartType = "Gauge";
-                        break;
-                    case "TreeMapVisualizationSettingsType":
-                        vizChartType = "TreeMap";
-                        break;
-                    case "PivotVisualizationSettingsType":
-                        vizChartType = "Pivot";
-                        break;                        
-                    case "ChoroplethMapVisualizationSettingsType":
-                        vizChartType = "Choropleth";
-                        break;     
-                    default:
-                        vizChartType = visualizationSettings.optString("ChartType", "Unknown Chart Type");
-                        System.out.println(type + " : " + vizChartType);
-                        break;
+                if ("GaugeVisualizationSettingsType".equals(type)) {
+                    // Set vizChartType based on ViewType
+                    switch (viewType) {
+                        case "Linear":
+                            vizChartType = "LinearGauge";
+                            break;
+                        case "Circular":
+                            vizChartType = "CircularGauge";
+                            break;
+                        case "SingleValue":
+                            vizChartType = "Text";
+                            break;
+                        case "BulletGraph":
+                            vizChartType = "BulletGraph";
+                            break;
+                        default:
+                            vizChartType = "Unknown Gauge Type";
+                            break;
+                    }
+                } else if ("ChartVisualizationSettingsType".equals(type)) {
+                    // Set vizChartType for ChartVisualizationSettingsType
+                    if ("Composite".equals(chartType)) {
+                        vizChartType = "Combo";
+                    } else {
+                        vizChartType = chartType;
+                    }
+                } else {
+                    // Handle other VisualizationSettings types
+                    switch (type) {
+                        case "IndicatorVisualizationSettingsType":
+                            vizChartType = "KpiTime";
+                            break;
+                        case "SingleRowVisualizationSettingsType":
+                            vizChartType = "TextView";
+                            break;
+                        case "IndicatorTargetVisualizationSettingsType":
+                            vizChartType = "KpiTarget";
+                            break;
+                        case "DiyVisualizationSettingsType":
+                            vizChartType = "Custom";
+                            break;
+                        case "AssetVisualizationSettingsType":
+                            vizChartType = "Image";
+                            break;
+                        case "GridVisualizationSettingsType":
+                            vizChartType = "Grid";
+                            break;
+                        case "TreeMapVisualizationSettingsType":
+                            vizChartType = "TreeMap";
+                            break;
+                        case "PivotVisualizationSettingsType":
+                            vizChartType = "Pivot";
+                            break;
+                        case "ChoroplethMapVisualizationSettingsType":
+                            vizChartType = "Choropleth";
+                            break;
+                        default:
+                            vizChartType = visualizationSettings.optString("ChartType", "Unknown Chart Type");
+                            System.out.println(type + " : " + vizChartType);
+                            break;
+                    }
                 }
             }
     
